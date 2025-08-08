@@ -45,7 +45,14 @@ jobs:
     needs: terraform
     environment: production
 
+    env:
+      AWS_REGION: "us-east-1"
+      TF_VERSION: "1.12.2"
+
     steps:
+      - name: "Wait for manual approval"
+        run: echo "Waiting for manual approval to proceed with Terraform apply."
+
       - name: "Checkout GitHub repository"
         uses: actions/checkout@v2
 
