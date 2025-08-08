@@ -39,18 +39,11 @@ jobs:
       - name: "Terraform Plan"
         run: terraform plan -out=tfplan
 
-      - name: "Upload Plan Artifact"
-        uses: actions/upload-artifact@v3
-        with:
-          name: tfplan
-          path: tfplan
-
-  apply:
-    name: "Terraform Apply"
+  manual_approval:
+    name: "Manual Approval"
     runs-on: ubuntu-latest
     needs: terraform
     environment: production
-    # Set up required reviewers in GitHub UI for this environment
 
     steps:
       - name: "Checkout GitHub repository"
@@ -70,12 +63,6 @@ jobs:
 
       - name: "Terraform Init"
         run: terraform init
-
-      - name: "Download Plan Artifact"
-        uses: actions/download-artifact@v3
-        with:
-          name: tfplan
-          path: .
 
       - name: "Terraform Apply"
         run: terraform apply -auto-approve tfplan
