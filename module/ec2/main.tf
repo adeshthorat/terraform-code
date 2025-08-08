@@ -15,14 +15,4 @@ resource "aws_instance" "this" {
       tags
     ]
   }
-  tags = {
-    Name = "AWSAPPUS${random_integer.ServerInteger.result}"
-  }
-
-}
-
-resource "random_integer" "SeverInteger" {
-  max = 9000
-  min = 1000
-
 }

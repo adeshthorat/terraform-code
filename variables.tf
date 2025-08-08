@@ -8,22 +8,34 @@ variable "cidr-range" {
 variable "ami_id" {
   description = "AMI ID to Create Server"
   type        = string
-  default     = "ami-020cba7c55df1f615"
 
 }
 variable "security_groups" {
-  type    = list(string)
-  default = ["sg-02f42c2ac1e34981d"]
+  type = list(string)
 }
 
 variable "subnet_id" {
   description = "Subnet id"
   type        = string
-  default     = "subnet-045525acab2e766c4"
 }
 
 variable "instance_type" {
   description = "EC2 instance type"
   type        = string
-  default     = "t3.micro"
+}
+
+variable "root_block_device" {
+  description = "Root block device configuration"
+  type = object({
+    volume_type = string
+    volume_size = number
+    encrypted   = bool
+    kms_key_id  = string
+  })
+  default = {
+    volume_type = "gp2"
+    volume_size = 10
+    encrypted   = false
+    kms_key_id  = null
+  }
 }

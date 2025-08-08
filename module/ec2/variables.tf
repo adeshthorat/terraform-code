@@ -37,9 +37,9 @@ variable "root_block_device" {
     kms_key_id  = string
   })
   default = {
-    volume_type = ""
-    volume_size = ""
-    encrypted   = ""
-    kms_key_id  = ""
+    volume_type = "gp2"
+    volume_size = 10
+    encrypted   = false
+    kms_key_id  = null
   }
 }
