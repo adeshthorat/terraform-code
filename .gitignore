@@ -1,0 +1,9 @@
+
+# Terraform plan output
+*.tfplan
+
+# .terraform directory
+.terraform/
+
+
+
