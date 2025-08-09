@@ -15,4 +15,24 @@ resource "aws_instance" "this" {
       tags
     ]
   }
+
+  tags = {
+    Name     = "AWS${var.environment}${local.generate_id}"
+    Team     = local.Team
+    AppOwner = "adesh_thorat"
+  }
+
+}
+
+locals {
+  Team        = "${var.environment}-Team"
+  created_on  = timestamp()
+  generate_id = random_integer.server.id
+  AppOwner    = "adesh_thorat"
+
+}
+
+resource "random_integer" "server" {
+  min = 10000
+  max = 99999
 }

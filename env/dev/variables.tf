@@ -39,3 +39,8 @@ variable "root_block_device" {
     kms_key_id  = null
   }
 }
+
+variable "Environment" {
+  description = "Resource will tagged as DEV"
+  default     = "DEV"
+}

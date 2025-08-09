@@ -1,9 +1,3 @@
-#==============VPC Variables====================
-
-variable "cidr-range" {
-  default = "10.0.0.0/16"
-}
-
 #==============EC2 Varibles ./module/ec2=====================
 variable "ami_id" {
   description = "AMI ID to Create Server"
@@ -38,4 +32,9 @@ variable "root_block_device" {
     encrypted   = false
     kms_key_id  = null
   }
+}
+
+variable "Environment" {
+  description = "Resource will tagged as PROD"
+  default     = "PROD"
 }

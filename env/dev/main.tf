@@ -13,3 +13,10 @@ module "aws_server" {
   }
 }
 
+
+locals {
+  Team       = "${var.Environment}-Team"
+  AppOwner   = ""
+  created_on = timestamp()
+
+}
