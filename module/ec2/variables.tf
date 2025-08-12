@@ -48,4 +48,5 @@ variable "root_block_device" {
 variable "environment" {
   description = "Choose Environment DEV/PROD"
   type        = string
+  default     = "Dev"
 }

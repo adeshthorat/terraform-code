@@ -1,6 +1,6 @@
 # This module creates an AWS Serve
-module "aws_server" {
-  source          = "./module/ec2"
+module "aws_instance" {
+  source          = "../../module/ec2"
   ami_id          = var.ami_id
   instance_type   = var.instance_type
   subnet_id       = var.subnet_id
@@ -16,7 +16,7 @@ module "aws_server" {
 
 locals {
   Team       = "${var.Environment}-Team"
-  AppOwner   = ""
+  AppOwner   = "adeshthorat"
   created_on = timestamp()
 
 }
