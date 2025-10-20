@@ -1,8 +1,9 @@
 resource "aws_instance" "this" {
-  ami                    = var.ami_id
-  instance_type          = var.instance_type
-  subnet_id              = var.subnet_id
-  vpc_security_group_ids = var.security_groups
+  ami                  = var.ami_id
+  instance_type        = var.instance_type
+  subnet_id            = var.subnet_id
+  security_groups      = var.security_groups
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
   root_block_device {
     volume_type = var.root_block_device.volume_type
     volume_size = var.root_block_device.volume_size
@@ -25,16 +26,16 @@ resource "aws_instance" "this" {
 }
 
 resource "aws_security_group" "restricted_sg" {
-  name        = "tf-restricted-sg-${random_id.sg_suffix.hex}"
+  name        = "tf-restricted-sg"
   description = "Allow SSH only from caller IP (as provided in variable my_ip_cidr)"
-  vpc_id      = data.aws_default_vpc.default.id
+  vpc_id      = var.vpc_id
 
   ingress {
-    description      = "Allow SSH from your IP"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = [var.my_ip]
+    description = "Allow SSH from your IP"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.my_ip]
   }
 
   egress {
@@ -81,6 +82,11 @@ data "aws_iam_policy_document" "s3_upload_policy" {
   }
 }
 
+resource "aws_iam_role" "s3_upload_role" {
+  name               = "tf-s3-upload-role"
+  assume_role_policy = data.aws_iam_policy_document.s3_upload_policy.json
+}
+
 resource "aws_iam_policy" "s3_upload_policy" {
   name        = "tf-s3-upload-policy"
   description = "Allow EC2 to upload objects to the Terraform-created S3 bucket"
@@ -97,11 +103,10 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   role = aws_iam_role.s3_upload_role.name
 }
 resource "aws_s3_bucket" "upload_bucket" {
-  bucket = "tf-upload-bucket-${randdom_integer.bucket_suffix.dec}"
+  bucket = "tf-upload-bucket-${random_integer.server.id}"
 
   tags = {
     Name = "tf-upload-bucket"
   }
-
   force_destroy = true
 }

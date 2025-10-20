@@ -24,6 +24,12 @@ variable "subnet_id" {
   type        = string
 }
 
+variable "vpc_id" {
+  description = "vpc_id for Servers and Security Groups"
+  type        = string
+}
+
+
 variable "instance_type" {
   description = "EC2 instance type"
   type        = string
