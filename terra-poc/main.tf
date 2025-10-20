@@ -4,12 +4,29 @@ resource "aws_instance" "this" {
   subnet_id            = var.subnet_id
   security_groups      = var.security_groups
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+  key_name             = var.key_name
   root_block_device {
     volume_type = var.root_block_device.volume_type
     volume_size = var.root_block_device.volume_size
     encrypted   = var.root_block_device.encrypted
     kms_key_id  = var.root_block_device.kms_key_id
   }
+  user_data = <<-EOF
+              #!/bin/bash
+              yum update -y
+
+              # Install Java 11 (Amazon Corretto)
+              amazon-linux-extras enable corretto11
+              yum install -y java-11-amazon-corretto
+
+              # Install Docker
+              amazon-linux-extras install -y docker
+              systemctl enable docker
+              systemctl start docker
+              usermod -aG docker ec2-user
+
+              echo "Java and Docker installation completed" > /var/log/startup-script.log
+              EOF
   lifecycle {
     prevent_destroy = true
     ignore_changes = [
@@ -84,9 +101,19 @@ data "aws_iam_policy_document" "s3_upload_policy" {
 
 resource "aws_iam_role" "s3_upload_role" {
   name               = "tf-s3-upload-role"
-  assume_role_policy = data.aws_iam_policy_document.s3_upload_policy.json
+  assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
 }
 
+data "aws_iam_policy_document" "ec2_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+    effect = "Allow"
+  }
+}
 resource "aws_iam_policy" "s3_upload_policy" {
   name        = "tf-s3-upload-policy"
   description = "Allow EC2 to upload objects to the Terraform-created S3 bucket"

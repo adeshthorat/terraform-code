@@ -29,6 +29,10 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "key_name" {
+  description = "value of key pair name to access EC2 instance"
+  type = string
+}
 
 variable "instance_type" {
   description = "EC2 instance type"
