@@ -1,23 +1,4 @@
-# Directory Structure
-
-terraform-code
-├── .github
-│ └── workflows/terraform-deploy.yml
-├── module
-│ └── ec2
-│ ├── main.tf
-│ ├── variables.tf
-│ └── outputs.tf
-└── vpc
-│ ├── main.tf
-│ ├── variables.tf
-│ └── outputs.tf
-├── main.tf
-├── variables.tf
-├── outputs.tf
-├── provider.tf
-├── terraform.tfvars # this will be used to set the variables for the Terraform configuration and it will triigger the GitHub Actions workflow
-└── README.md
+# Terraform AWS Deployment
 
 # Overview
 
