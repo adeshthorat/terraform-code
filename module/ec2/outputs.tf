@@ -13,3 +13,7 @@ output "instance-private-ip" {
   description = "Private IP of the EC2 instance"
 }
 
+output "aws_security_group" {
+  description = "Default security grop"
+  value       = aws_instance.this.security_groups
+}

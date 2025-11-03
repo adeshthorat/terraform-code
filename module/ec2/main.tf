@@ -2,7 +2,7 @@ resource "aws_instance" "this" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
   subnet_id              = var.subnet_id
-  vpc_security_group_ids = var.security_groups
+  vpc_security_group_ids = [data.aws_security_group.example_sg.id] #Default Security Group will be attached if not mentioned
   root_block_device {
     volume_type = var.root_block_device.volume_type
     volume_size = var.root_block_device.volume_size
@@ -15,24 +15,31 @@ resource "aws_instance" "this" {
       tags
     ]
   }
-
   tags = {
-    Name     = "AWS${var.environment}${local.generate_id}"
-    Team     = local.Team
-    AppOwner = "adesh_thorat"
+    Name        = "AWSUSAPP0912"
+    created_by  = local.created_by
+    created_on  = local.created_on
+    Availabilty = local.Availabilty
   }
+}
 
+data "aws_vpc" "select" {
+  default = true
+}
+
+data "aws_security_group" "example_sg" {
+  # You can identify the security group by its name, ID, or a combination of filters.
+  name   = "default"
+  vpc_id = data.aws_vpc.select.id
 }
 
 locals {
-  Team        = "${var.environment}-Team"
-  created_on  = timestamp()
-  generate_id = random_integer.server.id
-  AppOwner    = "adesh_thorat"
-
+  Team        = "Dev"
+  Availabilty = "24*7"
+  created_on  = format("dd-mm-yyyy", timestamp())
+  created_by  = "Terraform-Admin"
 }
 
-resource "random_integer" "server" {
-  min = 10000
-  max = 99999
-}
+
+
+

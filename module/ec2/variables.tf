@@ -6,11 +6,13 @@
 variable "ami_id" {
   description = "AMI ID to Provision Server"
   type        = string
+  default     = "ami-0360c520857e3138f"
 }
 
-variable "security_groups" {
-  default = []
-  type    = list(string)
+variable "security_group" {
+  default     = []
+  description = "List of Security Group IDs to attach to the instance"
+  type        = list(string)
 }
 
 variable "associate_public_ip" {
@@ -22,11 +24,13 @@ variable "associate_public_ip" {
 variable "subnet_id" {
   description = "Subnet id"
   type        = string
+  default     = ""
 }
 
 variable "instance_type" {
   description = "EC2 instance type"
   type        = string
+  default     = "t2.micro"
 }
 
 variable "root_block_device" {
@@ -45,8 +49,14 @@ variable "root_block_device" {
   }
 }
 
-variable "environment" {
-  description = "Choose Environment DEV/PROD"
+variable "server_type" {
   type        = string
-  default     = "Dev"
+  description = "DEV/DBS/APP/TST"
+
+}
+
+variable "created_by" {
+  description = "Admin id"
+  type        = string
+  default     = "Terrraform-Admin"
 }

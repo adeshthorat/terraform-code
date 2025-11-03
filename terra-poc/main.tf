@@ -1,139 +1,111 @@
-resource "aws_instance" "this" {
-  ami                  = var.ami_id
-  instance_type        = var.instance_type
-  subnet_id            = var.subnet_id
-  security_groups      = var.security_groups
-  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
-  key_name             = var.key_name
-  root_block_device {
-    volume_type = var.root_block_device.volume_type
-    volume_size = var.root_block_device.volume_size
-    encrypted   = var.root_block_device.encrypted
-    kms_key_id  = var.root_block_device.kms_key_id
+terraform {
+  required_providers {
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.2"
+    }
   }
-  user_data = <<-EOF
-              #!/bin/bash
-              yum update -y
+  required_version = ">= 1.3.0"
+}
 
-              # Install Java 11 (Amazon Corretto)
-              amazon-linux-extras enable corretto11
-              yum install -y java-11-amazon-corretto
+provider "null" {}
 
-              # Install Docker
-              amazon-linux-extras install -y docker
-              systemctl enable docker
-              systemctl start docker
-              usermod -aG docker ec2-user
+# ------------------------
+# Local test data
+# ------------------------
 
-              echo "Java and Docker installation completed" > /var/log/startup-script.log
-              EOF
-  lifecycle {
-    prevent_destroy = true
-    ignore_changes = [
-      tags
-    ]
-  }
+resource "null_resource" "this" {
+  for_each = tomap(local.server_types)
+  triggers = {
+    host   = each.value.host
+    type   = each.value.type
+    cpu    = each.value.cpu
+    memory = each.value.memory
 
-  tags = {
-    Name     = "AWS${var.environment}${local.generate_id}"
-    Team     = local.Team
-    AppOwner = "adesh_thorat"
   }
 
 }
 
-resource "aws_security_group" "restricted_sg" {
-  name        = "tf-restricted-sg"
-  description = "Allow SSH only from caller IP (as provided in variable my_ip_cidr)"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    description = "Allow SSH from your IP"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.my_ip]
+resource "null_resource" "test" {
+  triggers = {
+    for_each = var.tags != null ? var.tags : []
+    App      = null_resource.this.triggers.APP
   }
+}
 
-  egress {
-    description = "Allow all outbound"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "tf-restricted-sg"
-  }
+variable "check_server_type" {
+  description = "Will check server type"
+  type        = string
 }
 
 
 locals {
-  Team        = "${var.environment}-Team"
-  created_on  = timestamp()
-  generate_id = random_integer.server.id
-  AppOwner    = "adesh_thorat"
+  check_server_type = (var.check_server_type == local.server_types.DB.type ? true : false)
+}
+
+output "check_server_type" {
+  value = local.check_server_type
 
 }
 
-resource "random_integer" "server" {
-  min = 10000
-  max = 99999
+output "server_details" {
+  value = { for k, v in null_resource.this : k => v.triggers.type }
 }
 
-data "aws_iam_policy_document" "s3_upload_policy" {
-  statement {
-    sid    = "AllowPutObjectToSpecificBucket"
-    effect = "Allow"
-    actions = [
-      "s3:PutObject",
-      "s3:PutObjectAcl",
-      "s3:GetObject",
-      "s3:ListBucket"
-    ]
-    resources = [
-      aws_s3_bucket.upload_bucket.arn,
-      "${aws_s3_bucket.upload_bucket.arn}/*"
-    ]
-  }
+output "server_host" {
+  description = "List of Available host"
+  value       = local.server_types.APP.host
 }
 
-resource "aws_iam_role" "s3_upload_role" {
-  name               = "tf-s3-upload-role"
-  assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
-}
 
-data "aws_iam_policy_document" "ec2_assume_role" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-    effect = "Allow"
-  }
-}
-resource "aws_iam_policy" "s3_upload_policy" {
-  name        = "tf-s3-upload-policy"
-  description = "Allow EC2 to upload objects to the Terraform-created S3 bucket"
-  policy      = data.aws_iam_policy_document.s3_upload_policy.json
-}
+output "try-test" { #evaluate result of all arguments and returns the result of first one with no error
+  description = "checker"
+  value       = try(local.server_types.DB.ram, null_resource.this, "NotFound")
 
-resource "aws_iam_role_policy_attachment" "attach_policy" {
-  role       = aws_iam_role.s3_upload_role.name
-  policy_arn = aws_iam_policy.s3_upload_policy.arn
 }
+# output "server_types_key" {
+#   description = "List of available types"
+#   value       = local.servers.prod.
+# }
+# output "server_types_value" {
+#   description = "List of available types"
+#   value       = local.servers.keys.value.type
+# }
 
-resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "tf-ec2-instance-profile"
-  role = aws_iam_role.s3_upload_role.name
-}
-resource "aws_s3_bucket" "upload_bucket" {
-  bucket = "tf-upload-bucket-${random_integer.server.id}"
+locals { #terraform object
+  #server_type = toset(["APP", "DBS", "TST", "UAT"])
 
   tags = {
-    Name = "tf-upload-bucket"
+    app   = "gr"
+    owner = "terra"
   }
-  force_destroy = true
+
+
+  server_types = {
+    DB = { #DB is key with 4 value attributes which we can call like each.value.host/each.value.type
+      host   = "DBS",
+      type   = "r5.xlarge",
+      cpu    = "4"
+      memory = "8Gi"
+    }
+    APP = {
+      host   = "APP"
+      type   = "t4.large"
+      cpu    = "6"
+      memory = "8Gi"
+    }
+  }
 }
+
+
+# locals { #terraform object
+#   #server_type = toset(["APP", "DBS", "TST", "UAT"])
+#   servers = { #key
+#     web1 = "t2.micro"
+#     web2 = "t3.micro"
+#   }
+# }
+
+# output "server_typewithfor" {
+#   value = { for k, v in local.servers : k => v.keys }
+# }

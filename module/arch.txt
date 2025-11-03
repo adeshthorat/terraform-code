@@ -1,0 +1,20 @@
+.
+├─ modules/
+│   ├─ vpc/                  # module for VPC, IGW, subnets, routes
+│   ├─ ec2/                  # module for EC2 instances
+│   ├─ security_group/       # module for Security Groups
+│   └─ s3_bucket/            # module for S3 bucket
+├─ envs/
+│   ├─ non-prod/
+│   │   ├─ main.tf
+│   │   ├─ variables.tf
+│   │   ├─ terraform.tfvars
+│   │   └─ outputs.tf
+│   └─ prod/
+│       ├─ main.tf
+│       ├─ variables.tf
+│       ├─ terraform.tfvars
+│       └─ outputs.tf
+└─ .github/
+    └─ workflows/
+        └─ terraform.yml     # GitHub Actions workflow

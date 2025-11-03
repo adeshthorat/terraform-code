@@ -1,0 +1,4 @@
+dynamic blocks must always be nested inside a resource/data/module/provider block
+dynamic blocks require a content block that defines the structure of each generated block
+The for_each argument in a dynamic block must be a map or set
+For creating multiple separate resources, prefer for_each on the resource itself rather than using dynamic
