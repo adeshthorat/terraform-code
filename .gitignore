@@ -10,3 +10,5 @@ state_backup/*
 
 #gitignore for Terraform variables file
 *.gitignore
+.terraform.lock.hcl
+terraform.tf*

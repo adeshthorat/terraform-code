@@ -9,8 +9,17 @@ resource "aws_instance" "this" {
     encrypted   = var.root_block_device.encrypted
     kms_key_id  = var.root_block_device.kms_key_id
   }
+
+  ebs_block_device {
+    volume_type = var.ebs_block_device.volume_type
+    volume_size = var.ebs_block_device.volume_size
+    encrypted   = var.ebs_block_device.encrypted
+    kms_key_id  = var.ebs_block_device.kms_key_id
+    device_name = var.ebs_block_device.device_name
+  }
+
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
     ignore_changes = [
       tags
     ]
@@ -18,7 +27,6 @@ resource "aws_instance" "this" {
   tags = {
     Name        = "AWSUSAPP0912"
     created_by  = local.created_by
-    created_on  = local.created_on
     Availabilty = local.Availabilty
   }
 }
@@ -36,7 +44,6 @@ data "aws_security_group" "example_sg" {
 locals {
   Team        = "Dev"
   Availabilty = "24*7"
-  created_on  = format("dd-mm-yyyy", timestamp())
   created_by  = "Terraform-Admin"
 }
 

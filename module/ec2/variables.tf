@@ -49,9 +49,29 @@ variable "root_block_device" {
   }
 }
 
+variable "ebs_block_device" {
+  description = "Extra EBS block device configuration"
+  type = object({
+    volume_type = string
+    volume_size = number
+    encrypted   = bool
+    kms_key_id  = string
+    device_name = string
+  })
+  default = {
+    volume_type = "gp2"
+    volume_size = 8
+    encrypted   = false
+    kms_key_id  = null
+    device_name = "/dev/sdg"
+  }
+
+}
+
 variable "server_type" {
   type        = string
   description = "DEV/DBS/APP/TST"
+  default = ""
 
 }
 
