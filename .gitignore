@@ -1,16 +1,20 @@
-# Terraform plan output
+# Local .terraform directories
+**/.terraform/*
+.terraform/
+
+# Terraform state files
+*.tfstate
+*.tfstate.*
+
+
+# Sensitive variable files
+*.tfvars
+*.tfvars.json
+
+
+
+# Terraform plan files
 *.tfplan
 
-# .terraform directory
-.terraform/
-.tfstate
-
-#tf_state backup
-state_backup/*
-
-#gitignore for Terraform variables file
-*.gitignore
-*.lock.hcl
-*.tfstate.*
-terraform.tfstate.backup
-*.tfstate.lock.info
+# Lock file (optional: commit if you want deterministic provider versions)
+.terraform.lock.hcl
