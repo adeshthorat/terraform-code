@@ -6,13 +6,18 @@
 variable "ami_id" {
   description = "AMI ID to Provision Server"
   type        = string
-  default     = "ami-0360c520857e3138f"
+  default     = ""
 }
 
 variable "security_group" {
   default     = []
   description = "List of Security Group IDs to attach to the instance"
   type        = list(string)
+}
+
+variable "enable" {
+  default = true
+  type    = bool
 }
 
 variable "associate_public_ip" {
@@ -30,7 +35,7 @@ variable "subnet_id" {
 variable "instance_type" {
   description = "EC2 instance type"
   type        = string
-  default     = "t2.micro"
+  default     = ""
 }
 
 variable "root_block_device" {
@@ -43,7 +48,7 @@ variable "root_block_device" {
   })
   default = {
     volume_type = "gp2"
-    volume_size = 10
+    volume_size = 8
     encrypted   = false
     kms_key_id  = null
   }
@@ -65,13 +70,6 @@ variable "ebs_block_device" {
     kms_key_id  = null
     device_name = "/dev/sdg"
   }
-
-}
-
-variable "server_type" {
-  type        = string
-  description = "DEV/DBS/APP/TST"
-  default = ""
 
 }
 
