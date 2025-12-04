@@ -7,11 +7,7 @@ resource "aws_instance" "ec2" {
   security_groups             = [aws_security_group.allow_tls.id]
   associate_public_ip_address = false
 
-  tags = {
-    Name        = each.key
-    CreatedBy   = "Terraform"
-    Environment = "demo"
-  }
+  tags = merge(var.tags, var.tags-all, { "Name" = "${each.key}" })
 
   depends_on = [aws_security_group.allow_tls]
 }
@@ -22,7 +18,9 @@ data "aws_vpc" "this" {
 }
 
 
+
 resource "aws_security_group" "allow_tls" {
+
   name        = "Allow Port 443/80"
   description = "Allow TLS inbound traffic and all outbound traffic"
   vpc_id      = data.aws_vpc.this.id
@@ -58,4 +56,3 @@ resource "aws_security_group" "allow_tls" {
   }
 
 }
-
