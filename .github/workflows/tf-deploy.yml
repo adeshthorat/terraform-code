@@ -35,7 +35,13 @@ jobs:
           terraform_version: 1.8.5
 
       - name: "Terraform Init"
+<<<<<<< HEAD
         run: terraform init -upgrade
+=======
+        run: |
+          cd /env/dev
+          terraform init -upgrade
+>>>>>>> 913593772484d33df98011e1bd5d3d84da193461
         
       - name: "Terraform fmt"
         run: terraform fmt
