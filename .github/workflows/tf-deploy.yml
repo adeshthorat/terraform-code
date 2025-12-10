@@ -3,8 +3,8 @@ name: Terraform Deploy
 on:
   push:
     branches: ["main"]
-    # paths:
-    #   - 'env/**'
+    paths:
+      - 'env/**'
 jobs:
   terraform:
     name: "Terraform  Deploy"
@@ -17,7 +17,6 @@ jobs:
 
     env:
       AWS_REGION: "us-east-1"
-      TF_VERSION: "1.12.2"
 
     steps:
       - name: "Checkout GitHub repository"
@@ -49,3 +48,6 @@ jobs:
       - name: "Apply Changes to Infra"
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve tfplan
+
+
+    
