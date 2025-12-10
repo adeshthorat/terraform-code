@@ -13,7 +13,7 @@ jobs:
     
     permissions:
       id-token: write
-      contents: read
+      contents: write
       pull-requests: write
 
     env:
@@ -37,7 +37,7 @@ jobs:
 
       - name: "Terraform Init"
         run: |
-          cd /env/dev
+          cd /env/dev/
           terraform init
         
       - name: "Terraform fmt"
