@@ -48,4 +48,4 @@ jobs:
 
       - name: "Apply Changes to Infra"
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve tfplan -var-file="dev.tfvars"
+        run: terraform apply -auto-approve tfplan
