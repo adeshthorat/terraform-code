@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "env/dev/"
+      - 'env/**'
 jobs:
   terraform:
     name: "Terraform  Deploy"
@@ -37,7 +37,7 @@ jobs:
 
       - name: "Terraform Init"
         run: |
-          cd /env/dev/
+          cd env/dev
           terraform init
         
       - name: "Terraform fmt"
