@@ -1,4 +1,4 @@
 instance_type = "t3.micro"
-ami           = "ami-0360c520857e3138f"
+ami           = "ami-068c0051b15cdb816"
 sg_ids        = ["sg-07046adfdb2762800"]
 subnet_id     = "subnet-06c54934528a298fb"
