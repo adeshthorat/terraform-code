@@ -3,8 +3,8 @@ name: Terraform Deploy
 on:
   push:
     branches: ["main"]
-    paths:
-      - 'env/**'
+    # paths:
+    #   - 'env/**'
 jobs:
   terraform:
     name: "Terraform  Deploy"
