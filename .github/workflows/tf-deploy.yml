@@ -5,8 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "terraform.tfvars"
-
+      - "env/dev/dev.tfvars"
 jobs:
   terraform:
     name: "Terraform  Deploy"

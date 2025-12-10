@@ -8,7 +8,6 @@
 
 
 # Sensitive variable files
-*.tfvars
 *.tfvars.json
 
 
