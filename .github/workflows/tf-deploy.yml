@@ -37,7 +37,9 @@ jobs:
       - name: "Terraform Init"
         run: |
           cd env/dev
-          terraform init --upgrade
+          rm -rf .terraform
+          rm -f .terraform.lock.hcl
+          terraform init -upgrade
         
       - name: "Terraform fmt"
         run: terraform fmt
