@@ -10,6 +10,7 @@
 # Sensitive variable files
 *.tfvars.json
 
+terra-poc/*
 
 
 # Terraform plan files
