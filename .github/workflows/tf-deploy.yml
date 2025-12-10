@@ -35,11 +35,7 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
 
       - name: "Terraform Init"
-        run: |
-          cd env/dev
-          rm -rf .terraform
-          rm -f .terraform.lock.hcl
-          terraform init -upgrade
+        run: terraform init
         
       - name: "Terraform fmt"
         run: terraform fmt
