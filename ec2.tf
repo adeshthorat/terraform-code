@@ -1,5 +1,5 @@
 module "ec2_app" {
-  source        = "../../module/ec2"
+  source        = "./module/ec2"
   name          = "app1"
   name_prefix   = "test"
   ami           = var.ami
