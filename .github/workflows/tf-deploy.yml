@@ -58,7 +58,7 @@ jobs:
         run: terraform validate
 
       - name: "Terraform Plan"
-        run: terraform plan -out=tfplan -var-file="/env/dev/dev.tfvars"
+        run: terraform plan -out=tfplan -var-file="env/dev/dev.tfvars"
 
       - name: "Apply Changes to Infra"
         if: github.ref == 'refs/heads/main'
