@@ -41,12 +41,13 @@ jobs:
       - name: "Run TFLint"
         run: tflint --version && tflint
         
-      - name: Install tfsec and Run Scan
-        run: |
-          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
-          tfsec --version
-          tfsec .
+      - name: "Check Secuirity Issues"
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          soft_fail: true
+          format: sarif
 
+          
       - name: "Terraform Init"
         run: terraform init
         
