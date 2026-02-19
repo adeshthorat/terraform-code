@@ -27,19 +27,6 @@ module "s3" {
   bucket_name = "${var.project_name}-data-bucket"
 }
 
-module "ecr" {
-  source    = "../modules/ecr"
-  repo_name = "${var.project_name}-app"
-}
-
-module "alb" {
-  source          = "../modules/alb"
-  prefix          = var.project_name
-  vpc_id          = module.vpc.vpc_id
-  public_subnets  = module.vpc.public_subnets
-  security_groups = [module.security_groups.alb_sg_id]
-}
-
 module "ec2" {
   source              = "../modules/ec2"
   prefix              = var.project_name
@@ -56,23 +43,7 @@ module "iam" {
   github_repo = "adeshthorat/terraform-code"
 }
 
-module "ecs" {
-  source              = "../modules/ecs"
-  prefix              = var.project_name
-  task_definition_arn = "arn:aws:ecs:us-east-1:123456789012:task-definition/sample-task:1" # Placeholder
-  private_subnets     = module.vpc.private_subnets
-  security_groups      = [module.security_groups.ecs_tasks_sg_id]
-  target_group_arn    = module.alb.target_group_arn
-  container_name      = "app"
-}
 
-module "asg" {
-  source          = "../modules/asg"
-  prefix          = var.project_name
-  ami_id          = "ami-0c55b159cbfafe1f0"
-  private_subnets = module.vpc.private_subnets
-  security_groups = [module.security_groups.ecs_tasks_sg_id]
-}
 
 # Note: EKS is commented out as it takes ~20 mins to deploy and incurs significant cost
 # module "eks" {
