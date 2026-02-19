@@ -1,6 +1,8 @@
 terraform {
   backend "s3" {
-    # Bucket and DynamoDB table will be passed during init
+    bucket         = "terraform-aws-tfstate5361" # Replace with your bucket name
+    key            = "tfstate/terraform.tfstate" # Replace with your state file path
+    region         = "us-east-1" # Replace with your AWS region
   }
 }
 
