@@ -22,11 +22,6 @@ module "security_groups" {
   prefix = var.project_name
 }
 
-module "s3" {
-  source      = "../modules/s3"
-  bucket_name = "${var.project_name}-data-bucket"
-}
-
 module "ec2" {
   source              = "../modules/ec2"
   prefix              = var.project_name
@@ -42,8 +37,6 @@ module "iam" {
   prefix      = var.project_name
   github_repo = "adeshthorat/terraform-code"
 }
-
-
 
 # Note: EKS is commented out as it takes ~20 mins to deploy and incurs significant cost
 # module "eks" {
