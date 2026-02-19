@@ -22,15 +22,7 @@ module "security_groups" {
   prefix = var.project_name
 }
 
-module "ec2" {
-  source              = "../modules/ec2"
-  prefix              = var.project_name
-  instance_type       = "t2.small"
-  associate_public_ip = true
-  root_volume_size    = 8
-  subnet_id           = module.vpc.public_subnets[0]
-  security_groups     = [module.security_groups.alb_sg_id] # Reusing ALB SG for port 80 access
-}
+
 
 module "iam" {
   source      = "../modules/iam"
