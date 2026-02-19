@@ -5,5 +5,5 @@ variable "aws_region" {
 
 variable "project_name" {
   type    = string
-  default = "my-test-project"
+  default = "dev-infra-setup"
 }
