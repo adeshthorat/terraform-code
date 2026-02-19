@@ -2,7 +2,8 @@ terraform {
   backend "s3" {
     bucket         = "terraform-aws-tfstate5361" # Replace with your bucket name
     key            = "tfstate/terraform.tfstate" # Replace with your state file path
-    region         = "us-east-1" # Replace with your AWS region
+    region         = "us-east-1"                 # Replace with your AWS region
+    use_lockfile   = true
   }
 }
 
@@ -50,8 +51,9 @@ module "ec2" {
 }
 
 module "iam" {
-  source = "../modules/iam"
-  prefix = var.project_name
+  source      = "../modules/iam"
+  prefix      = var.project_name
+  github_repo = "adeshthorat/terraform-code"
 }
 
 module "ecs" {
