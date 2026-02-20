@@ -36,6 +36,6 @@ module "ec2"{
   prefix = var.project_name
   instance_type = "t2.micro"
   subnet_id = "subnet-094c1647789b2b101"
-  security_groups = "sg-0854e3a19660651bd"
+  security_groups = ["sg-0854e3a19660651bd"]
   associate_public_ip = true
 }
