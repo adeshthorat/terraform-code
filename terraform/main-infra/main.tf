@@ -23,7 +23,6 @@ module "security_groups" {
 }
 
 
-
 module "iam" {
   source      = "../modules/iam"
   prefix      = var.project_name
@@ -31,16 +30,7 @@ module "iam" {
 }
 
 # Task 1: EC2 instance - t2.micro with public IP
-module "ec2" {
-  source              = "../modules/ec2"
-  prefix              = var.project_name
-  ami_id              = "ami-0b6c6ebed2801a5cb"
-  instance_type       = "t2.micro"
-  subnet_id           = "subnet-02321d64392d67052"
-  security_groups     = ["sg-09695058ea3c052ad"]
-  associate_public_ip = true
-  root_volume_size    = 10
-}
+
 
 # Task 2: Add port 8000 inbound rule to existing SG
 resource "aws_security_group_rule" "custom_tcp_8000" {
