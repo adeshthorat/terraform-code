@@ -56,7 +56,7 @@ resource "aws_security_group_rule" "custom_tcp_8080" {
 module "s3_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
 
-  bucket = "cops-artifact-bucket-"
+  bucket = "cops-artifact-bucket-752235"
   acl    = "private"
 
   control_object_ownership = true
