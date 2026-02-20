@@ -53,16 +53,3 @@ resource "aws_security_group_rule" "custom_tcp_8080" {
 }
 
 #Task 5: Create s3 private bucket 
-module "s3_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
-
-  bucket = "cops-artifact-bucket-752235"
-  acl    = "private"
-
-  control_object_ownership = true
-  object_ownership         = "ObjectWriter"
-
-  versioning = {
-    enabled = true
-  }
-}
