@@ -37,7 +37,7 @@ output "github_actions_role_arn" {
   value = aws_iam_role.github_actions_role.arn
 }
 
-# ECS Task Execution Role
+#ECS Task Execution Role
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "${var.prefix}-ecs-task-execution-role"
 

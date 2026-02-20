@@ -29,27 +29,5 @@ module "iam" {
   github_repo = "adeshthorat/terraform-code"
 }
 
-# Task 1: EC2 instance - t2.micro with public IP
 
 
-# Task 2: Add port 8000 inbound rule to existing SG
-resource "aws_security_group_rule" "custom_tcp_8000" {
-  type              = "ingress"
-  from_port         = 8000
-  to_port           = 8000
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "sg-0399c817d0c7de4b8"
-}
-
-#Task 3: Add Port 8080 inbound rule to existing SG
-resource "aws_security_group_rule" "custom_tcp_8080" {
-  type              = "ingress"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "sg-09695058ea3c052ad"
-}
-
-#Task 5: Create s3 private bucket 
