@@ -29,5 +29,12 @@ module "iam" {
   github_repo = "adeshthorat/terraform-code"
 }
 
-
-
+#Task 1: Create an EC2 instance in the public subnet of the VPC with a security group that allows SSH access from anywhere. Use the latest Amazon Linux 2 AMI and a t2.micro instance type.
+module "ec2"{
+  source = "../modules/ec2"
+  ami_id = "ami-0b6c6ebed2801a5cb" # Amazon Linux 2 AMI (HVM), SSD Volume Type
+  instance_type = "t2.micro"
+  subnet_id = module.vpc.public_subnet_ids[0]
+  security_groups = [module.security_groups.web_sg_id]
+  associate_public_ip = true
+}
