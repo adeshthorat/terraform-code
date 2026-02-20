@@ -52,12 +52,17 @@ resource "aws_security_group_rule" "custom_tcp_8080" {
   security_group_id = "sg-09695058ea3c052ad"
 }
 
+#Task 5: Create s3 private bucket 
+module "s3_bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
 
-# Note: EKS is commented out as it takes ~20 mins to deploy and incurs significant cost
-# module "eks" {
-#   source           = "../modules/eks"
-#   prefix           = var.project_name
-#   cluster_role_arn = module.iam.eks_cluster_role_arn
-#   node_role_arn    = module.iam.eks_node_role_arn
-#   subnet_ids       = module.vpc.private_subnets
-# }
+  bucket = "cops-artifact-bucket-"
+  acl    = "private"
+
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
+
+  versioning = {
+    enabled = true
+  }
+}
