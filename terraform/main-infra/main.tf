@@ -27,5 +27,3 @@ module "iam" {
   prefix      = var.project_name
   github_repo = "adeshthorat/terraform-code"
 }
-
-
