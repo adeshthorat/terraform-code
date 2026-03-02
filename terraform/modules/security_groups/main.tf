@@ -1,47 +1,40 @@
-resource "aws_security_group" "alb" {
-  name        = "${var.prefix}-alb-sg"
-  description = "Security group for ALB"
+resource "aws_security_group" "this" {
+  for_each    = var.security_groups
+  name        = "${var.prefix}-${each.key}-sg"
+  description = each.value.description
   vpc_id      = var.vpc_id
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = each.value.ingress_rules
+    content {
+      from_port       = ingress.value.from_port
+      to_port         = ingress.value.to_port
+      protocol        = ingress.value.protocol
+      cidr_blocks     = ingress.value.cidr_blocks
+      security_groups = ingress.value.security_groups
+      self            = ingress.value.self
+      description     = ingress.value.description
+    }
   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "egress" {
+    for_each = each.value.egress_rules
+    content {
+      from_port       = egress.value.from_port
+      to_port         = egress.value.to_port
+      protocol        = egress.value.protocol
+      cidr_blocks     = egress.value.cidr_blocks
+      security_groups = egress.value.security_groups
+      self            = egress.value.self
+      description     = egress.value.description
+    }
   }
+
+  tags = merge(var.common_tags, each.value.tags, {
+    Name = "${var.prefix}-${each.key}-sg"
+  })
 }
 
-resource "aws_security_group" "ecs_tasks" {
-  name        = "${var.prefix}-ecs-tasks-sg"
-  description = "Security group for ECS tasks"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    from_port       = var.container_port
-    to_port         = var.container_port
-    protocol        = "tcp"
-    security_groups = [aws_security_group.alb.id]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-output "alb_sg_id" {
-  value = aws_security_group.alb.id
-}
-
-output "ecs_tasks_sg_id" {
-  value = aws_security_group.ecs_tasks.id
+output "security_group_ids" {
+  value = { for k, v in aws_security_group.this : k => v.id }
 }

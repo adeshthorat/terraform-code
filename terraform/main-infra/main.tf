@@ -27,3 +27,17 @@ module "iam" {
   prefix      = var.project_name
   github_repo = "adeshthorat/terraform-code"
 }
+
+data "aws_security_group" "existing_sg" {
+  id = "sg-09842d87b90b84e4b"  # Replace with your SG ID
+}
+
+
+resource "aws_security_group_rule" "allow_BUAppServerAccess" {
+  type            = "ingress"
+  from_port       = 8000
+  to_port         = 8000
+  protocol        = "tcp"
+  security_group_id = data.aws_security_group.existing_sg.id
+  cidr_blocks     = ["0.0.0.0/0"]
+}

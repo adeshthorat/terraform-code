@@ -1,25 +1,31 @@
 resource "aws_instance" "this" {
-  ami                         = var.ami_id
-  instance_type               = var.instance_type
-  subnet_id                   = var.subnet_id
-  vpc_security_group_ids      = var.security_groups
-  associate_public_ip_address = var.associate_public_ip
-  user_data                   = file("${path.module}/user-data.sh")
+  for_each = var.instances
+
+  ami                         = each.value.ami_id
+  instance_type               = each.value.instance_type
+  subnet_id                   = each.value.subnet_id
+  vpc_security_group_ids      = each.value.security_groups
+  associate_public_ip_address = each.value.associate_public_ip
+  user_data                   = each.value.user_data_path != null ? file(each.value.user_data_path) : null
 
   root_block_device {
-    volume_size = var.root_volume_size
-    volume_type = var.root_volume_type
+    volume_size = each.value.root_volume_size
+    volume_type = each.value.root_volume_type
   }
 
-  tags = merge(var.tags, {
-    Name = "${var.prefix}-instance"
-  })
+  tags = merge(
+    var.common_tags,
+    each.value.tags,
+    {
+      Name = "${var.prefix}-${each.key}-instance"
+    }
+  )
 }
 
-output "instance_id" {
-  value = aws_instance.this.id
+output "instance_ids" {
+  value = { for k, v in aws_instance.this : k => v.id }
 }
 
-output "public_ip" {
-  value = aws_instance.this.public_ip
+output "public_ips" {
+  value = { for k, v in aws_instance.this : k => v.public_ip }
 }

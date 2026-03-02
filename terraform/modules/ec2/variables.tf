@@ -1,41 +1,31 @@
 variable "prefix" {
-  type = string
+  type        = string
+  description = "Prefix for resource naming"
 }
 
-variable "ami_id" {
-  type    = string
-  default = "ami-0c55b159cbfafe1f0" # Amazon Linux 2 in us-east-1
+variable "vpc_id" {
+  type        = string
+  description = "VPC ID where instances will be created"
+  default     = null
 }
 
-variable "instance_type" {
-  type    = string
-  default = "t2.micro"
+variable "instances" {
+  type = map(object({
+    ami_id              = optional(string, "ami-0c55b159cbfafe1f0")
+    instance_type       = optional(string, "t2.micro")
+    subnet_id           = string
+    security_groups     = optional(list(string), [])
+    associate_public_ip = optional(bool, false)
+    root_volume_size    = optional(number, 8)
+    root_volume_type    = optional(string, "gp3")
+    user_data_path      = optional(string, null)
+    tags                = optional(map(string), {})
+  }))
+  description = "Map of instance configurations"
 }
 
-variable "subnet_id" {
-  type = string
-}
-
-variable "security_groups" {
-  type = list(string)
-}
-
-variable "associate_public_ip" {
-  type    = bool
-  default = false
-}
-
-variable "root_volume_size" {
-  type    = number
-  default = 8
-}
-
-variable "root_volume_type" {
-  type    = string
-  default = "gp3"
-}
-
-variable "tags" {
-  type    = map(string)
-  default = {}
+variable "common_tags" {
+  type        = map(string)
+  default     = {}
+  description = "Common tags for all instances"
 }
