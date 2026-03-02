@@ -55,9 +55,4 @@ resource "aws_security_group_rule" "allow_DBServerAccess" {
   security_group_id = data.aws_security_group.DB_access_sg.id
   cidr_blocks     = ["10.0.0.0/0"]
   description     = "Allow outbound traffic on port 1443 (HTTP)"
-  tags ={
-    Name = Allow_DB-Access
-    modifiedBy = "AdeshThorat"
-    Date = "2026-03-02"
-  }
 }
