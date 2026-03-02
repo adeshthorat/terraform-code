@@ -47,7 +47,7 @@ data "aws_security_group" "DB_access_sg" {
   id = "sg-00e55b130cd9713e1"  # Replace with your SG ID
 }
 
-resource "aws_security_group_rule" "allow_BUAppServerAccess" {
+resource "aws_security_group_rule" "allow_DBServerAccess" {
   type            = "ingress"
   from_port       = 1443
   to_port         = 1443
@@ -57,5 +57,7 @@ resource "aws_security_group_rule" "allow_BUAppServerAccess" {
   description     = "Allow outbound traffic on port 1443 (HTTP)"
   tags ={
     Name = Allow_DB-Access
+    modifiedBy = "AdeshThorat"
+    Date = "2026-03-02"
   }
 }
