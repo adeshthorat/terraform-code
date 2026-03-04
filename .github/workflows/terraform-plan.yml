@@ -7,6 +7,8 @@ on:
     paths:
       - 'terraform/**'
 #run workflow manually from github actions tab
+  workflow_dispatch:
+    
 jobs:
 
 #------------------------------------TFLINT-JOB-----------------------------------------------#
