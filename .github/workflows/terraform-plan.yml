@@ -8,7 +8,48 @@ on:
       - 'terraform/**'
 
 jobs:
-  terraform:
+
+#-------------------------------------CHECKOV-SCAN-JOB----------------------------------------#  
+  checkov-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set timestamp
+        id: timestamp
+        run: echo "ts=$(date +'%d%m%y-%H%M')" >> $GITHUB_OUTPUT
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .
+          output_format: sarif
+          output_file_path: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.sarif
+
+      - name: Commit SARIF report to repo
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add checkov-report/
+          git commit -m "Add Checkov report ${{ steps.timestamp.outputs.ts }}"
+          git push
+
+      - name: Upload SARIF report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkov-report
+          path: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.sarif
+
+      - name: Upload SARIF to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.sarif
+
+#-------------------------------------TERRAFORM-PLAN-JOB----------------------------------------#  
+
+  terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
     permissions:
