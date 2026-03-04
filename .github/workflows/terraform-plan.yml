@@ -27,6 +27,7 @@ jobs:
           directory: .
           output_format: sarif
           output_file_path: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.sarif
+        continue-on-error: true
 
       - name: Commit SARIF report to repo
         run: |
