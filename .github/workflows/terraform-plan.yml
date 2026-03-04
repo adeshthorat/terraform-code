@@ -8,7 +8,6 @@ on:
       - 'terraform/**'
 
 jobs:
-
 #-------------------------------------CHECKOV-SCAN-JOB----------------------------------------#  
   checkov-scan:
     runs-on: ubuntu-latest
@@ -29,13 +28,20 @@ jobs:
           output_file_path: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.sarif
         continue-on-error: true
 
+      - name: Display the current directory structure and git branch
+        run: |
+          echo "Current directory structure:"
+          ls -R
+          echo "Current git branch: $GIT_BRANCH $GITHUB_REF"
+          git branch
+
       - name: Commit SARIF report to repo
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add checkov-report/
           git commit -m "Add Checkov report ${{ steps.timestamp.outputs.ts }}"
-          git push
+          git push orign HEAD:${GITHUB_REF}
 
       - name: Upload SARIF report artifact
         uses: actions/upload-artifact@v4
