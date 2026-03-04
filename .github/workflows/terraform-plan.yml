@@ -47,7 +47,7 @@ jobs:
       - name: Run tfsec
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
-          sarif_file: tfsec.sarif
+          working_directory: ./terraform
         continue-on-error: true
 
       - name: Generate Security Summary
@@ -57,13 +57,6 @@ jobs:
           echo "- **Checkov**: Completed" >> $GITHUB_STEP_SUMMARY
           echo "- **tfsec**: Completed" >> $GITHUB_STEP_SUMMARY
 
-      - name: Upload Scan Reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: security-reports
-          path: |
-            checkov.sarif
-            tfsec.sarif
 
   #-------------------------------------TERRATEST-JOB----------------------------------------#
   terratest:
