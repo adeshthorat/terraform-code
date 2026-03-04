@@ -35,10 +35,10 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+          BRANCH_NAME=${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}
           git pull origin $BRANCH_NAME
           git add checkov-report/
           git commit -m "Add Checkov report ${{ steps.timestamp.outputs.ts }}"
-          BRANCH_NAME=${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}
           echo "Pushing to branch: $BRANCH_NAME"
           git push origin HEAD:${BRANCH_NAME}
           echo "SARIF report committed and pushed to branch: $BRANCH_NAME"    
