@@ -56,3 +56,13 @@ resource "aws_security_group_rule" "allow_DBServerAccess" {
   cidr_blocks     = ["10.0.0.0/8"]
   description     = "Allow outbound traffic on port 1443 (HTTP)"
 }
+
+resource "aws_security_group_rule" "allow_BastionAccess" {
+  type            = "ingress"
+  from_port       = 8001
+  to_port         = 8001
+  protocol        = "tcp"
+  security_group_id = data.aws_security_group.DB_access_sg.id
+  cidr_blocks     = ["10.0.0.0/8"]
+  description     = "Allow inbound Bastion access for Port 8001 (HTTP)"
+}
