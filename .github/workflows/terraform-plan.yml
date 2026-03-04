@@ -19,7 +19,9 @@ jobs:
 
       - name: Set timestamp
         id: timestamp
-        run: echo "ts=$(date +'%d%m%y-%H%M')" >> $GITHUB_OUTPUT
+        run: |
+         echo "ts=$(date +'%d%m%y-%H%M')" >> $GITHUB_OUTPUT
+         echo ${BC_FROM_BRANCH}
 
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
@@ -36,8 +38,10 @@ jobs:
           git add checkov-report/
           git commit -m "Add Checkov report ${{ steps.timestamp.outputs.ts }}"
           BRANCH_NAME=${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}
-          echo "Pushing to branch: $BRANCH_NAME" 
-          git push origin HEAD:${BRANCH_NAME}    
+          echo "Pushing to branch: $BRANCH_NAME"
+          git pull origin $BRANCH_NAME --rebase 
+          git push origin HEAD:${BRANCH_NAME}
+          echo "SARIF report committed and pushed to branch: $BRANCH_NAME"    
 
       - name: Upload SARIF report artifact
         uses: actions/upload-artifact@v4
