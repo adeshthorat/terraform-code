@@ -28,7 +28,7 @@ jobs:
         with:
           directory: ./terraform
           output_format: sarif
-          output_file_path: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.sarif
+          output_file_path: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.json
         continue-on-error: true
 
       - name: Commit SARIF report to repo
@@ -46,12 +46,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: checkov-report
-          path: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.sarif
+          path: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.json
 
       - name: Upload SARIF to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.sarif
+          sarif_file: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.json
 
 #-------------------------------------TERRAFORM-PLAN-JOB----------------------------------------#  
 
