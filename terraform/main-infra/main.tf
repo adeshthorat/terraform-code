@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket       = "terraform-aws-tfstate5361" # Replace with your bucket name
-    key          = "tfstate/terraform.tfstate" # Replace with your state file path
-    region       = "us-east-1"                 # Replace with your AWS region
+    bucket       = "terraform-aws-tfstate5361"
+    key          = "tfstate/terraform.tfstat"
+    region       = "us-east-1"
     use_lockfile = true
   }
 }
@@ -12,58 +12,57 @@ provider "aws" {
 }
 
 module "vpc" {
-  source   = "../modules/vpc"
-  vpc_name = "${var.project_name}-vpc"
+  source = "../modules/vpc"
+  name   = var.project_name
 }
 
 module "security_groups" {
   source = "../modules/security_groups"
   vpc_id = module.vpc.vpc_id
   prefix = var.project_name
+
+  security_groups = {
+    alb = {
+      description = "Allow inbound HTTP/HTTPS to ALB"
+      ingress_rules = [
+        { from_port = 80, to_port = 80, protocol = "tcp", cidr_blocks = ["0.0.0.0/0"] },
+        { from_port = 443, to_port = 443, protocol = "tcp", cidr_blocks = ["0.0.0.0/0"] }
+      ]
+    }
+    app = {
+      description = "Allow traffic from ALB to App"
+      ingress_rules = [
+        { from_port = 8080, to_port = 8080, protocol = "tcp", source_security_group_key = "alb" }
+      ]
+    }
+    ecs = {
+      description = "ECS tasks security group"
+      ingress_rules = [
+        { from_port = 8080, to_port = 8080, protocol = "tcp", self = true }
+      ]
+    }
+  }
 }
 
 module "iam" {
-  source      = "../modules/iam"
-  prefix      = var.project_name
-  github_repo = "adeshthorat/terraform-code"
+  source                = "../modules/iam"
+  prefix                = var.project_name
+  github_repo           = "adeshthorat/terraform-code"
+  create_lambda_role    = true
+  create_codebuild_role = true
 }
 
-data "aws_security_group" "existing_sg" {
-  id = "sg-09842d87b90b84e4b" # Replace with your SG ID
+module "s3" {
+  source      = "../modules/s3"
+  common_tags = { Environment = "dev" }
+  buckets = {
+    app_data = {
+      bucket_name        = "${var.project_name}-app-data-5361"
+      versioning_enabled = true
+    }
+  }
 }
 
 
-resource "aws_security_group_rule" "allow_BUAppServerAccess" {
-  type              = "ingress"
-  from_port         = 8000
-  to_port           = 8000
-  protocol          = "tcp"
-  security_group_id = data.aws_security_group.existing_sg.id
-  cidr_blocks       = ["0.0.0.0/0"]
-}
 
-#Date-2024-06-01 Task1: Add an egress rule to allow outbound traffic on port 1443 (HTTP) to the existing security group.
-data "aws_security_group" "DB_access_sg" {
-  id = "sg-00e55b130cd9713e1" # Replace with your SG ID
-}
-
-resource "aws_security_group_rule" "allow_DBServerAccess" {
-  type              = "ingress"
-  from_port         = 1443
-  to_port           = 1443
-  protocol          = "tcp"
-  security_group_id = data.aws_security_group.DB_access_sg.id
-  cidr_blocks       = ["10.0.0.0/8"]
-  description       = "Allow outbound traffic on port 1443 (HTTP)"
-}
-
-resource "aws_security_group_rule" "allow_BastionAccess" {
-  type              = "ingress"
-  from_port         = 8001
-  to_port           = 8001
-  protocol          = "tcp"
-  security_group_id = data.aws_security_group.DB_access_sg.id
-  cidr_blocks       = ["10.0.0.0/8"]
-  description       = "Allow inbound Bastion access for Port 8001 (HTTP)"
-}
 
