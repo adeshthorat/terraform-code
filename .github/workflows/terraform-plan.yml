@@ -6,8 +6,29 @@ on:
       - main
     paths:
       - 'terraform/**'
-
+#run workflow manually from github actions tab
 jobs:
+
+#------------------------------------TFLINT-JOB-----------------------------------------------#
+  terraform-lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set timestamp
+        id: timestamp
+        run: |
+         echo "ts=$(date +'%d%m%y-%H%M')" >> $GITHUB_OUTPUT
+
+      - name: Run TFLint
+        uses: terraform-linters/tflint-action@v1
+        with: 
+          args: --recursive
+        continue-on-error: true
+      
 #-------------------------------------CHECKOV-SCAN-JOB----------------------------------------#  
   checkov-scan:
     runs-on: ubuntu-latest
@@ -27,7 +48,7 @@ jobs:
         uses: bridgecrewio/checkov-action@v12
         with:
           directory: ./terraform
-          output_format: sarif
+          output_format: json
           output_file_path: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.json
         continue-on-error: true
 
@@ -41,24 +62,33 @@ jobs:
           git commit -m "Add Checkov report ${{ steps.timestamp.outputs.ts }}" || echo "No changes to commit"
           echo "Pushing to branch: $BRANCH_NAME"
           git push origin HEAD:${BRANCH_NAME}
+          git status
 
-      - name: Upload SARIF report artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: checkov-report
-          path: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.json
+#-------------------------------------TERRATEST-JOB----------------------------------------#
 
-      - name: Upload SARIF to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
+  terratest:
+    runs-on: ubuntu-latest
+    needs: [terraform-lint, checkov-scan]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
         with:
-          sarif_file: checkov-report/checkov-report${{ steps.timestamp.outputs.ts }}.json
+          go-version: '1.21'
+
+      - name: Run Terratest
+        run: |
+          cd test
+          go test -v -timeout 30m
 
 #-------------------------------------TERRAFORM-PLAN-JOB----------------------------------------#  
 
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
-    needs: checkov-scan
+    needs: terratest
     if: success()
     permissions:
       id-token: write
