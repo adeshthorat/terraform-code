@@ -12,7 +12,7 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "./terraform/modules/vpc"
+  source = "../modules/vpc"
 
   name                 = "dev-vpc"
   vpc_cidr             = "10.0.0.0/16"
