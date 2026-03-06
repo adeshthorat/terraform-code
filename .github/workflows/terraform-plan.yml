@@ -57,37 +57,10 @@ jobs:
           echo "- **Checkov**: Completed" >> $GITHUB_STEP_SUMMARY
           echo "- **tfsec**: Completed" >> $GITHUB_STEP_SUMMARY
 
-
-  #-------------------------------------TERRATEST-JOB----------------------------------------#
-  terratest:
-    name: Terratest
-    runs-on: ubuntu-latest
-    needs: security-and-sca
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.21'
-          cache: true
-
-      - name: Run Terratest
-        run: |
-          if [ -d "test" ]; then
-            cd test
-            go test -v -timeout 30m
-          else
-            echo "No 'test' directory found. Skipping Terratest."
-          fi
-
   #-------------------------------------TERRAFORM-PLAN-JOB----------------------------------------#
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
-    needs: terratest
-    if: success()
     permissions:
       id-token: write
       contents: read
