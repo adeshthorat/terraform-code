@@ -30,29 +30,20 @@ module "vpc" {
 
 module "s3bucket" {
   source = "../modules/s3"
-  bucket1{
-    bucket_name = "my-unique-bucket-name-536197253951" # Must be globally unique
-    versioning_enabled = true
-    force_destroy = false
-    kms_key_arn = null
-    access_log_bucket = null
-    tags = {
-      Environment = "prod"
-      Team        = "platform"
-      ManagedBy   = "Terraform"
-    }
-    lifecycle_rules = [
-      {
-        id      = "transition-to-glacier"
-        enabled = true
-        transitions = [
-          {
-            days          = 30
-            storage_class = "GLACIER"
-          }
-        ]
-        expiration_days = 365
+
+  buckets = {
+    prod_bucket = {
+      bucket_name       = "test-logs-bucket-536197253951"
+      versioning_enabled = true
+      force_destroy      = false
+      kms_key_arn        = null
+      access_log_bucket  = null
+
+      tags = {
+        Environment = "prod"
+        Team        = "platform"
+        ManagedBy   = "Terraform"
       }
-    ]
+    }
   }
 }
