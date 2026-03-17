@@ -50,13 +50,6 @@ jobs:
           working_directory: ./terraform
         continue-on-error: true
 
-      - name: Generate Security Summary
-        run: |
-          echo "### Security Scan Summary" >> $GITHUB_STEP_SUMMARY
-          echo "Security scans completed. Check artifacts for detailed reports." >> $GITHUB_STEP_SUMMARY
-          echo "- **Checkov**: Completed" >> $GITHUB_STEP_SUMMARY
-          echo "- **tfsec**: Completed" >> $GITHUB_STEP_SUMMARY
-
   #-------------------------------------TERRAFORM-PLAN-JOB----------------------------------------#
   terraform-plan:
     name: Terraform Plan

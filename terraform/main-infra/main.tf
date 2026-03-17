@@ -21,9 +21,17 @@ module "vpc" {
   private_subnet_cidrs = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 
   enable_nat_gateway = true
-  single_nat_gateway = false # HA: one NAT per AZ
+  single_nat_gateway = true # HA: one NAT per AZ
   enable_flow_logs   = true
 
   tags = { Environment = "prod", Team = "platform" , ManagedBy = "Terraform" }
 }
 
+
+module "s3bucket-17032026" {
+  source = "../modules/s3bucket"
+
+  bucket_name = "test-logs-bucket-536197253951" # Replace with a unique bucket name
+  versioning   = true
+  tags        = { Environment = "prod", Team = "platform", ManagedBy = "Terraform" }
+}
