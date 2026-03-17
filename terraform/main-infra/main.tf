@@ -28,10 +28,9 @@ module "vpc" {
 }
 
 
-module "s3bucket-17032026" {
+module "s3bucket" {
   source = "../modules/s3"
-
   bucket_name = "test-logs-bucket-536197253951" # Replace with a unique bucket name
-  versioning   = true
+  versioning_enabled   = true
   tags        = { Environment = "prod", Team = "platform", ManagedBy = "Terraform" }
 }
