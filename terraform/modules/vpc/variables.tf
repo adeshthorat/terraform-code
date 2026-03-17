@@ -53,7 +53,7 @@ variable "enable_flow_logs" {
 variable "flow_logs_retention_days" {
   description = "Number of days to retain VPC Flow Log data in CloudWatch Logs."
   type        = number
-  default     = 90
+  default     = 7
 
   validation {
     condition     = contains([1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1096, 1827, 2192, 2557, 2922, 3288, 3653], var.flow_logs_retention_days)

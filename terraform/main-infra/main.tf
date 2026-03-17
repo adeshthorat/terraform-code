@@ -47,3 +47,8 @@ module "s3bucket" {
     }
   }
 }
+
+resource "aws_cloudwatch_log_group" "example" {
+  name              = "/aws/vpc/flow-logs/dev-vpc"   # existing log group name
+  retention_in_days = 7                          # new retention period in days
+}
