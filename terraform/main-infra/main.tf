@@ -29,7 +29,7 @@ module "vpc" {
 
 
 module "s3bucket-17032026" {
-  source = "../modules/s3bucket"
+  source = "../modules/s3"
 
   bucket_name = "test-logs-bucket-536197253951" # Replace with a unique bucket name
   versioning   = true
