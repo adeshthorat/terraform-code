@@ -28,10 +28,22 @@ module "vpc" {
 }
 
 
-module "s3bucket-17032026" {
-  source = "../modules/s3bucket"
+module "s3bucket" {
+  source = "../modules/s3"
 
-  bucket_name = "test-logs-bucket-536197253951" # Replace with a unique bucket name
-  versioning   = true
-  tags        = { Environment = "prod", Team = "platform", ManagedBy = "Terraform" }
+  buckets = {
+    prod_bucket = {
+      bucket_name       = "test-logs-bucket-536197253951"
+      versioning_enabled = true
+      force_destroy      = false
+      kms_key_arn        = null
+      access_log_bucket  = null
+
+      tags = {
+        Environment = "prod"
+        Team        = "platform"
+        ManagedBy   = "Terraform"
+      }
+    }
+  }
 }
