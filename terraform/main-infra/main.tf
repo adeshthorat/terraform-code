@@ -1,9 +1,9 @@
 terraform {
   backend "s3" {
-    bucket         = "terraform-aws-tfstate5361" # Replace with your bucket name
-    key            = "tfstate/terraform.tfstate" # Replace with your state file path
-    region         = "us-east-1"                 # Replace with your AWS region
-    use_lockfile   = true
+    bucket       = "terraform-aws-tfstate5361" # Replace with your bucket name
+    key          = "tfstate/terraform.tfstate" # Replace with your state file path
+    region       = "us-east-1"                 # Replace with your AWS region
+    use_lockfile = true
   }
 }
 
@@ -24,7 +24,7 @@ module "vpc" {
   single_nat_gateway = true # HA: one NAT per AZ
   enable_flow_logs   = true
 
-  tags = { Environment = "prod", Team = "platform" , ManagedBy = "Terraform" }
+  tags = { Environment = "prod", Team = "platform", ManagedBy = "Terraform" }
 }
 
 
@@ -33,7 +33,7 @@ module "s3bucket" {
 
   buckets = {
     prod_bucket = {
-      bucket_name       = "test-logs-bucket-536197253951"
+      bucket_name        = "test-logs-bucket-536197253951"
       versioning_enabled = true
       force_destroy      = false
       kms_key_arn        = null
@@ -49,6 +49,44 @@ module "s3bucket" {
 }
 
 resource "aws_cloudwatch_log_group" "example" {
-  name              = "/aws/vpc/flow-logs/dev-vpc"   # existing log group name
-  retention_in_days = 7                          # new retention period in days
+  name              = "/aws/vpc/flow-logs/dev-vpc" # existing log group name
+  retention_in_days = 7                            # new retention period in days
 }
+
+module "security_groups" {
+  source = "../modules/security_groups"
+  prefix = "dev"
+  vpc_id = module.vpc.vpc_id
+  security_groups = {
+    web = {
+      description = "Web servers SG"
+      ingress_rules = [
+        {
+          from_port   = 80
+          to_port     = 80
+          protocol    = "tcp"
+          cidr_blocks = ["0.0.0.0/0"]
+          description = "Allow HTTP from anywhere"
+        },
+        {
+          from_port   = 22
+          to_port     = 22
+          protocol    = "tcp"
+          cidr_blocks = ["0.0.0.0/0"]
+          description = "Allow HTTPS from anywhere"
+        }
+      ]
+      egress_rules = [
+        {
+          from_port   = 0
+          to_port     = 0
+          protocol    = "-1"
+          cidr_blocks = ["0.0.0.0/0"]
+          description = "Allow all outbound"
+        }
+      ]
+      tags = { Role = "webserver" }
+    }
+  }
+}
+
