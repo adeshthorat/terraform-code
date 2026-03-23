@@ -48,10 +48,6 @@ module "s3bucket" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "example" {
-  name              = "/aws/vpc/flow-logs/dev-vpc" # existing log group name
-  retention_in_days = 7                            # new retention period in days
-}
 
 module "security_groups" {
   source = "../modules/security_groups"
@@ -90,3 +86,18 @@ module "security_groups" {
   }
 }
 
+module "ec2" {
+  source = "../modules/ec2"
+  prefix = "dev"
+
+  instances = {
+    web1 = {
+      ami_id             = "ami-0ec10929233384c7f" # Amazon Linux 2 AMI in us-east-1
+      instance_type      = "t3.micro"
+      subnet_id          = module.vpc.public_subnet_ids[0]
+      security_group_ids = [module.security_groups.security_group_ids["web"]]
+      key_name           = null
+      tags               = { Name = "web1", Role = "webserver" }
+    }
+  }
+}
