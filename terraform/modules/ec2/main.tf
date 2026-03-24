@@ -16,7 +16,7 @@ resource "aws_instance" "this" {
   instance_type          = each.value.instance_type
   subnet_id              = each.value.subnet_id
   vpc_security_group_ids = each.value.security_group_ids
-  iam_instance_profile   = each.value.instance_profile_name
+  iam_instance_profile   = each.value.iam_instance_profile
   key_name               = each.value.key_name
   associate_public_ip_address              = each.value.associate_public_ip_address
   user_data_base64       = each.value.user_data != null ? base64encode(each.value.user_data) : null
