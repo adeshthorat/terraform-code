@@ -97,7 +97,7 @@ module "iam" {
 
 module "ec2" {
   source = "../modules/ec2"
-  prefix = "app-server"
+  prefix = "app-server-1"
 
   instances = {
     web1 = {
