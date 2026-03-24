@@ -19,7 +19,7 @@ resource "aws_instance" "this" {
   iam_instance_profile   = each.value.iam_instance_profile
   key_name               = each.value.key_name
   associate_public_ip_address              = each.value.associate_public_ip_address
-  user_data_base64       = each.value.user_data != null ? base64encode(each.value.user_data) : null
+  user_data       = each.value.user_data
 
   # IMDSv2 enforcement — prevents SSRF-based credential theft
   metadata_options {

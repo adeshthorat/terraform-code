@@ -87,9 +87,9 @@ module "security_groups" {
 }
 
 module "iam" {
-  source          = "../modules/iam"
-  prefix          = "dev"
-  create_ec2_role = true 
+  source               = "../modules/iam"
+  prefix               = "dev"
+  create_ec2_role      = true
   ec2_extra_policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess" # Example additional policy for EC2 Role
 }
 
@@ -113,8 +113,8 @@ module "ec2" {
         sudo apt install -y nginx
         sudo systemctl start nginx
         EOF
-      key_name = null
-      tags     = { Name = "web1", Role = "webserver" }
+      key_name                    = null
+      tags                        = { Name = "web1", Role = "webserver" }
     }
   }
 }
