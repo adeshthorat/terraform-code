@@ -15,7 +15,7 @@ variable "tags" {
 variable "create_ecs_task_execution_role" {
   description = "Whether to create the ECS Task Execution Role."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "ecs_task_execution_extra_policies" {
@@ -34,7 +34,7 @@ variable "ecs_task_execution_extra_policies" {
 variable "create_ecs_task_role" {
   description = "Whether to create the ECS Task Role (application-level permissions)."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "ecs_task_inline_policies" {
@@ -54,6 +54,12 @@ variable "create_ec2_role" {
   description = "Whether to create an EC2 Instance Role and Instance Profile."
   type        = bool
   default     = false
+}
+
+variable "ec2_extra_policy_arn" {
+  description = "ARN of an additional IAM policy to attach to the EC2 Role (e.g., for S3 or DynamoDB access)."
+  type        = string
+  default     = ""
 }
 
 ###############################################################################

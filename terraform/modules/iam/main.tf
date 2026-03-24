@@ -114,6 +114,7 @@ resource "aws_iam_role" "ec2" {
       Principal = local.ec2_principal
     }]
   })
+  
 
   tags = var.tags
 }
@@ -125,11 +126,11 @@ resource "aws_iam_role_policy_attachment" "ec2_ssm" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_iam_role_policy_attachment" "ec2_cloudwatch" {
+resource "aws_iam_role_policy_attachment" "other_policy" {
   count = var.create_ec2_role ? 1 : 0
 
   role       = aws_iam_role.ec2[0].name
-  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+  policy_arn = var.ec2_extra_policy_arn
 }
 
 resource "aws_iam_instance_profile" "ec2" {
