@@ -113,7 +113,6 @@ module "ec2" {
         sudo apt install -y nginx
         sudo systemctl start nginx
         EOF
-
       key_name = null
       tags     = { Name = "web1", Role = "webserver" }
     }
