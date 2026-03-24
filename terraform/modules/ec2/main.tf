@@ -44,6 +44,6 @@ resource "aws_instance" "this" {
   })
 
   lifecycle {
-    ignore_changes = [ami] # Prevent replacement on AMI updates; handle with new instance + drain
+    ignore_changes = [ami,user_data] # Prevent replacement on AMI updates; handle with new instance + drain
   }
 }
