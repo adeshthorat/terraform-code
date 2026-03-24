@@ -17,7 +17,7 @@ variable "instances" {
     - instance_type            (required) — EC2 instance type (e.g. t3.medium).
     - subnet_id                (required) — Subnet ID to launch the instance in.
     - security_group_ids       (required) — List of security group IDs.
-    - instance_profile_name    (optional) — IAM Instance Profile name. Recommended for SSM access.
+    - instance_profile   (optional) — IAM Instance Profile name. Recommended for SSM access.
     - key_name                 (optional) — EC2 key pair name. Prefer SSM Session Manager over SSH.
     - user_data                (optional) — Shell script as a string (not a file path).
     - root_volume_size_gb      (optional, default 20) — Root EBS volume size in GiB.
@@ -32,7 +32,7 @@ variable "instances" {
     instance_type              = string
     subnet_id                  = string
     security_group_ids         = list(string)
-    instance_profile_name      = optional(string, null)
+    iam_instance_profile     = optional(string, null)
     key_name                   = optional(string, null)
     associate_public_ip_address= optional(bool, false)
     user_data                  = optional(string, null)
