@@ -89,6 +89,7 @@ module "security_groups" {
 module "iam" {
   source          = "../modules/iam"
   prefix          = "dev"
+  description = "Ec2-role-admin-access"
   create_ec2_role = true 
   ec2_extra_policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess" # Example additional policy for EC2 Role
 }
