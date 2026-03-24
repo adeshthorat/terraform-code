@@ -104,7 +104,7 @@ resource "aws_iam_role" "ec2" {
   count = var.create_ec2_role ? 1 : 0
 
   name        = "${var.prefix}-ec2-role"
-  description = "EC2 Instance Role — SSM Session Manager and CloudWatch agent access."
+  description = "EC2 Instance Role SSM Session Manager and CloudWatch agent access"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
