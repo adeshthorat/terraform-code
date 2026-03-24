@@ -96,8 +96,15 @@ module "ec2" {
       instance_type      = "t3.micro"
       subnet_id          = module.vpc.public_subnet_ids[0]
       security_group_ids = [module.security_groups.security_group_ids["web"]]
-      key_name           = null
-      tags               = { Name = "web1", Role = "webserver" }
+      user_data          = <<-EOF
+        #!/bin/bash
+        sudo apt update -y
+        sudo apt install -y nginx
+        sudo systemctl start nginx
+        EOF
+
+      key_name = null
+      tags     = { Name = "web1", Role = "webserver" }
     }
   }
 }
