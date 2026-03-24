@@ -95,7 +95,7 @@ module "ec2" {
       ami_id                      = "ami-0ec10929233384c7f" # Amazon Linux 2 AMI in us-east-1
       instance_type               = "t3.micro"
       subnet_id                   = module.vpc.public_subnet_ids[0]
-      iam_instance_profile_name   = "ec2-ssm-role"
+      iam_instance_profile        = "ec2-ssm-role"
       associate_public_ip_address = true
       security_group_ids          = [module.security_groups.security_group_ids["web"]]
       user_data                   = <<-EOF
