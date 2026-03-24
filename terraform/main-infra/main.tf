@@ -92,11 +92,13 @@ module "ec2" {
 
   instances = {
     web1 = {
-      ami_id             = "ami-0ec10929233384c7f" # Amazon Linux 2 AMI in us-east-1
-      instance_type      = "t3.micro"
-      subnet_id          = module.vpc.public_subnet_ids[0]
-      security_group_ids = [module.security_groups.security_group_ids["web"]]
-      user_data          = <<-EOF
+      ami_id                    = "ami-0ec10929233384c7f" # Amazon Linux 2 AMI in us-east-1
+      instance_type             = "t3.micro"
+      subnet_id                 = module.vpc.public_subnet_ids[0]
+      iam_instance_profile_name = ec2-ssm-role
+      public_ip                 = true
+      security_group_ids        = [module.security_groups.security_group_ids["web"]]
+      user_data                 = <<-EOF
         #!/bin/bash
         sudo apt update -y
         sudo apt install -y nginx

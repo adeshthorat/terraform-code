@@ -18,6 +18,7 @@ resource "aws_instance" "this" {
   vpc_security_group_ids = each.value.security_group_ids
   iam_instance_profile   = each.value.instance_profile_name
   key_name               = each.value.key_name
+  public_ip              = each.value.public_ip
   user_data_base64       = each.value.user_data != null ? base64encode(each.value.user_data) : null
 
   # IMDSv2 enforcement — prevents SSRF-based credential theft
