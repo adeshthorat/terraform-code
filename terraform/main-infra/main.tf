@@ -110,3 +110,53 @@ module "ec2" {
     }
   }
 }
+
+
+module "alb-security_groups" {
+  source = "../modules/security_groups"
+  prefix = "dev"
+  vpc_id = module.vpc.vpc_id
+  security_groups = {
+    lb = {
+      description = "Web servers SG"
+      ingress_rules = [
+        {
+          from_port   = 80
+          to_port     = 80
+          protocol    = "tcp"
+          cidr_blocks = ["0.0.0.0/0"]
+          description = "Allow HTTP from anywhere"
+        }
+      ]
+      egress_rules = [
+        {
+          from_port   = 0
+          to_port     = 0
+          protocol    = "-1"
+          cidr_blocks = ["0.0.0.0/0"]
+          description = "Allow all outbound"
+        }
+      ]
+      tags = { Role = "load-balancer-sg" }
+    }
+  }
+}
+
+
+
+module "alb" {
+  source                     = "../modules/alb"
+  prefix                     = "dev"
+  vpc_id                     = module.vpc.vpc_id
+  subnet_ids                 = module.vpc.public_subnet_ids
+  security_group_ids         = [module.alb-security_groups.security_group_ids["lb"]]
+  internal                   = false
+  enable_deletion_protection = true
+  idle_timeout               = 60
+  access_logs_bucket         = null  # Disable access logging for now
+  enable_https               = false # Start with HTTP only, can enable HTTPS later
+  target_port                = 80
+  target_protocol            = "HTTP"
+  target_type                = "instance"
+  health_check_path          = "/"
+}
