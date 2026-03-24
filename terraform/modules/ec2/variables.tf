@@ -34,7 +34,7 @@ variable "instances" {
     security_group_ids         = list(string)
     instance_profile_name      = optional(string, null)
     key_name                   = optional(string, null)
-    public_ip                  = optional(bool, false)
+    associate_public_ip_address= optional(bool, false)
     user_data                  = optional(string, null)
     root_volume_size_gb        = optional(number, 20)
     root_volume_type           = optional(string, "gp3")
