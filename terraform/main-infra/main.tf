@@ -22,7 +22,7 @@ module "vpc" {
 
   enable_nat_gateway = true
   single_nat_gateway = true # HA: one NAT per AZ
-  enable_flow_logs   = true
+  enable_flow_logs   = false
 
   tags = { Environment = "prod", Team = "platform", ManagedBy = "Terraform" }
 }
