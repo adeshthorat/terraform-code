@@ -18,6 +18,7 @@ resource "aws_instance" "this" {
   vpc_security_group_ids = each.value.security_group_ids
   iam_instance_profile   = each.value.instance_profile_name
   key_name               = each.value.key_name
+  associate_public_ip_address              = each.value.associate_public_ip_address
   user_data_base64       = each.value.user_data != null ? base64encode(each.value.user_data) : null
 
   # IMDSv2 enforcement — prevents SSRF-based credential theft
@@ -31,7 +32,7 @@ resource "aws_instance" "this" {
   root_block_device {
     volume_size           = each.value.root_volume_size_gb
     volume_type           = each.value.root_volume_type
-    encrypted             = true
+    encrypted             = false
     kms_key_id            = each.value.kms_key_id
     delete_on_termination = true
   }
