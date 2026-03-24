@@ -86,6 +86,15 @@ module "security_groups" {
   }
 }
 
+module "iam" {
+  source          = "../modules/iam"
+  prefix          = "dev"
+  create_ec2_role = true 
+  ec2_extra_policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess" # Example additional policy for EC2 Role
+}
+
+
+
 module "ec2" {
   source = "../modules/ec2"
   prefix = "app-server"
@@ -95,7 +104,7 @@ module "ec2" {
       ami_id                      = "ami-0ec10929233384c7f" # Amazon Linux 2 AMI in us-east-1
       instance_type               = "t3.micro"
       subnet_id                   = module.vpc.public_subnet_ids[0]
-      iam_instance_profile        = "ec2-ssm-role"
+      iam_instance_profile        = module.iam.ec2_instance_profile_name
       associate_public_ip_address = true
       security_group_ids          = [module.security_groups.security_group_ids["web"]]
       user_data                   = <<-EOF
@@ -141,6 +150,4 @@ module "alb-security_groups" {
     }
   }
 }
-
-
 
