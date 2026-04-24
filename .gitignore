@@ -12,3 +12,5 @@ _override.tf.json
 .terraformrc
 terraform.rc
 Terraform-user_accessKeys (2).csv
+terraform/local-module/*
+
